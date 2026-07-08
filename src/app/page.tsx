@@ -5,6 +5,9 @@ import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX, Music } from "luc
 
 interface Song {
   title: string;
+  artist: string;
+  album: string;
+  coverArt: string | null;
   fileName: string;
   url: string;
 }
@@ -139,7 +142,8 @@ export default function Home() {
               {/* Table Header */}
               <div className="flex items-center gap-4 px-4 py-2 text-xs font-medium text-neutral-500 border-b border-neutral-900 mb-2 uppercase tracking-wider">
                 <div className="w-8 text-center">#</div>
-                <div className="flex-1">Title</div>
+                <div className="flex-[2]">Title</div>
+                <div className="flex-1 hidden md:block">Album</div>
                 <div className="w-24 text-right">Source</div>
               </div>
 
@@ -173,12 +177,26 @@ export default function Home() {
                       )}
                     </div>
                     
-                    <div className="flex-1 truncate">
-                      <h3 className={`text-sm truncate transition-colors ${
-                        isActive ? 'text-white font-medium' : 'text-neutral-300 font-normal group-hover:text-white'
-                      }`}>
-                        {song.title}
-                      </h3>
+                    <div className="flex-[2] min-w-0 flex items-center gap-3">
+                      {song.coverArt ? (
+                        <img src={song.coverArt} alt={song.title} className="w-10 h-10 object-cover rounded-sm flex-shrink-0" />
+                      ) : (
+                        <div className="w-10 h-10 bg-neutral-800 flex items-center justify-center rounded-sm flex-shrink-0">
+                          <Music className="w-4 h-4 text-neutral-500" />
+                        </div>
+                      )}
+                      <div className="truncate flex flex-col justify-center">
+                        <h3 className={`text-sm truncate transition-colors ${
+                          isActive ? 'text-white font-medium' : 'text-neutral-300 font-normal group-hover:text-white'
+                        }`}>
+                          {song.title}
+                        </h3>
+                        <p className="text-xs text-neutral-500 truncate mt-0.5">{song.artist}</p>
+                      </div>
+                    </div>
+
+                    <div className="flex-1 hidden md:block text-sm text-neutral-400 truncate">
+                      {song.album}
                     </div>
 
                     <div className="w-24 text-right text-xs text-neutral-500">
@@ -198,12 +216,16 @@ export default function Home() {
         <div className="flex items-center gap-4 w-1/3 min-w-[200px]">
           {currentSongIndex !== null && songs[currentSongIndex] ? (
              <>
-               <div className="w-12 h-12 bg-neutral-900 flex items-center justify-center flex-shrink-0 rounded-sm">
-                 <Music className="w-5 h-5 text-neutral-600" />
-               </div>
+               {songs[currentSongIndex].coverArt ? (
+                 <img src={songs[currentSongIndex].coverArt} alt={songs[currentSongIndex].title} className="w-12 h-12 object-cover rounded-sm flex-shrink-0" />
+               ) : (
+                 <div className="w-12 h-12 bg-neutral-900 flex items-center justify-center flex-shrink-0 rounded-sm">
+                   <Music className="w-5 h-5 text-neutral-600" />
+                 </div>
+               )}
                <div className="truncate flex flex-col justify-center">
                  <h4 className="text-sm font-medium text-white truncate">{songs[currentSongIndex].title}</h4>
-                 <p className="text-xs text-neutral-500 mt-0.5 truncate">Yabotify Player</p>
+                 <p className="text-xs text-neutral-500 mt-0.5 truncate">{songs[currentSongIndex].artist}</p>
                </div>
              </>
           ) : (
