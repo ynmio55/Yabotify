@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX, Music, Upload } from "lucide-react";
+import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX, Music } from "lucide-react";
 
 interface Song {
   title: string;
@@ -18,12 +18,10 @@ export default function Home() {
   const [isMuted, setIsMuted] = useState(false);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
-  const [isUploading, setIsUploading] = useState(false);
   
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const fetchSongs = () => {
+  useEffect(() => {
     fetch("/api/music")
       .then((res) => res.json())
       .then((data) => {
@@ -32,39 +30,7 @@ export default function Home() {
         }
       })
       .catch((err) => console.error("Failed to fetch songs", err));
-  };
-
-  useEffect(() => {
-    fetchSongs();
   }, []);
-
-  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setIsUploading(true);
-    const formData = new FormData();
-    formData.append("file", file);
-
-    try {
-      const res = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      });
-      if (res.ok) {
-        fetchSongs();
-      } else {
-        console.error("Upload failed");
-      }
-    } catch (err) {
-      console.error("Error uploading", err);
-    } finally {
-      setIsUploading(false);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
-    }
-  };
 
   const togglePlay = () => {
     if (!audioRef.current || currentSongIndex === null) {
@@ -151,27 +117,10 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#000000] text-white font-sans flex flex-col">
       {/* Header */}
-      <header className="px-8 py-8 flex items-center justify-between">
+      <header className="px-8 py-8 flex items-center gap-3">
         <h1 className="text-xl font-semibold tracking-tight text-white">
           Yabotify
         </h1>
-        <div>
-          <input 
-            type="file" 
-            accept="audio/*" 
-            className="hidden" 
-            ref={fileInputRef} 
-            onChange={handleUpload} 
-          />
-          <button 
-            onClick={() => fileInputRef.current?.click()}
-            disabled={isUploading}
-            className="flex items-center gap-2 px-4 py-2 rounded-full bg-neutral-900 hover:bg-neutral-800 text-sm font-medium text-white transition-colors disabled:opacity-50"
-          >
-            <Upload className="w-4 h-4" />
-            {isUploading ? "Uploading..." : "Upload Song"}
-          </button>
-        </div>
       </header>
 
       {/* Main Content */}
