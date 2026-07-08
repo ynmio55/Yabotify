@@ -13,7 +13,7 @@ export async function GET() {
     }
 
     const fileNames = fs.readdirSync(musicDirectory);
-    const songs = fileNames
+    let localSongs = fileNames
       .filter((fileName) => {
         const ext = path.extname(fileName).toLowerCase();
         return ['.mp3', '.wav', '.ogg', '.m4a', '.flac'].includes(ext);
@@ -48,11 +48,35 @@ export async function GET() {
           album,
           coverArt,
           fileName,
-          url: `/music/${fileName}`
+          url: `/music/${fileName}`,
+          source: 'Local'
         };
       });
 
-    return NextResponse.json({ songs });
+    let jamendoSongs: any[] = [];
+    try {
+      const jamendoRes = await fetch("https://api.jamendo.com/v3.0/tracks/?client_id=56d30c95&format=json&limit=20&hasimage=true&boost=downloads_month");
+      if (jamendoRes.ok) {
+        const jamendoData = await jamendoRes.json();
+        if (jamendoData.results) {
+          jamendoSongs = jamendoData.results.map((track: any) => ({
+            title: track.name,
+            artist: track.artist_name,
+            album: track.album_name || "Jamendo",
+            coverArt: track.image,
+            fileName: `jamendo-${track.id}.mp3`,
+            url: track.audio,
+            source: 'Jamendo'
+          }));
+        }
+      }
+    } catch (err) {
+      console.error("Error fetching Jamendo songs:", err);
+    }
+
+    const allSongs = [...localSongs, ...jamendoSongs];
+
+    return NextResponse.json({ songs: allSongs });
   } catch (error) {
     console.error('Error reading music:', error);
     return NextResponse.json({ error: 'Failed to read music list' }, { status: 500 });

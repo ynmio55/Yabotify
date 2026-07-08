@@ -10,6 +10,7 @@ interface Song {
   coverArt: string | null;
   fileName: string;
   url: string;
+  source: 'Local' | 'Jamendo';
 }
 
 export default function Home() {
@@ -199,8 +200,12 @@ export default function Home() {
                       {song.album}
                     </div>
 
-                    <div className="w-24 text-right text-xs text-neutral-500">
-                      Local
+                    <div className="w-24 text-right text-xs">
+                      {song.source === 'Jamendo' ? (
+                        <span className="bg-[#1DB954]/20 text-[#1DB954] px-2 py-1 rounded-sm">Jamendo</span>
+                      ) : (
+                        <span className="text-neutral-500">Local</span>
+                      )}
                     </div>
                   </div>
                 );
