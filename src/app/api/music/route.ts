@@ -57,8 +57,8 @@ export async function GET() {
     try {
       const jamendoRes = await fetch("https://api.jamendo.com/v3.0/tracks/?client_id=56d30c95&format=json&limit=20&hasimage=true&boost=downloads_month");
       if (jamendoRes.ok) {
-        const jamendoData = await jamendoRes.json();
-        if (jamendoData.results) {
+        const jamendoData: any = await jamendoRes.json();
+        if (jamendoData && jamendoData.results) {
           jamendoSongs = jamendoData.results.map((track: any) => ({
             title: track.name,
             artist: track.artist_name,
