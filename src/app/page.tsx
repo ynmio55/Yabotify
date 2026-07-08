@@ -179,9 +179,9 @@ export default function Home() {
                     
                     <div className="flex-[2] min-w-0 flex items-center gap-3">
                       {song.coverArt ? (
-                        <img src={song.coverArt} alt={song.title} className="w-10 h-10 object-cover rounded-sm flex-shrink-0" />
+                        <img src={song.coverArt} alt={song.title} className={`w-10 h-10 object-cover rounded-sm flex-shrink-0 transition-all duration-500 ease-out ${isActive && isPlaying ? 'scale-110 shadow-md' : 'scale-100'}`} />
                       ) : (
-                        <div className="w-10 h-10 bg-neutral-800 flex items-center justify-center rounded-sm flex-shrink-0">
+                        <div className={`w-10 h-10 bg-neutral-800 flex items-center justify-center rounded-sm flex-shrink-0 transition-all duration-500 ease-out ${isActive && isPlaying ? 'scale-110 shadow-md' : 'scale-100'}`}>
                           <Music className="w-4 h-4 text-neutral-500" />
                         </div>
                       )}
@@ -217,9 +217,9 @@ export default function Home() {
           {currentSongIndex !== null && songs[currentSongIndex] ? (
              <>
                {songs[currentSongIndex].coverArt ? (
-                 <img src={songs[currentSongIndex].coverArt} alt={songs[currentSongIndex].title} className="w-12 h-12 object-cover rounded-sm flex-shrink-0" />
+                 <img src={songs[currentSongIndex].coverArt} alt={songs[currentSongIndex].title} className={`object-cover rounded-sm flex-shrink-0 transition-all duration-500 ease-out ${isPlaying ? 'w-14 h-14 shadow-lg shadow-black/50' : 'w-12 h-12 shadow-sm'}`} />
                ) : (
-                 <div className="w-12 h-12 bg-neutral-900 flex items-center justify-center flex-shrink-0 rounded-sm">
+                 <div className={`bg-neutral-900 flex items-center justify-center flex-shrink-0 rounded-sm transition-all duration-500 ease-out ${isPlaying ? 'w-14 h-14 shadow-lg shadow-black/50' : 'w-12 h-12 shadow-sm'}`}>
                    <Music className="w-5 h-5 text-neutral-600" />
                  </div>
                )}
