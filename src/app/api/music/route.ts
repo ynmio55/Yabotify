@@ -32,7 +32,7 @@ export async function GET() {
             if (tags.artist) artist = tags.artist;
             if (tags.album) album = tags.album;
             
-            if (tags.image && tags.image.imageBuffer) {
+            if (tags.image && typeof tags.image !== 'string' && tags.image.imageBuffer) {
               const base64 = tags.image.imageBuffer.toString('base64');
               const mime = tags.image.mime || 'image/jpeg';
               coverArt = `data:${mime};base64,${base64}`;
